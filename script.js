@@ -128,7 +128,7 @@ document.addEventListener('DOMContentLoaded', () => {
         
         try {
             // Send request to the API
-            const response = await fetch('http://localhost:5000/quantum-move', {
+            const response = await fetch('https://tictactoe-quantum.onrender.com', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
