@@ -1,6 +1,6 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
-from qiskit import QuantumCircuit, execute
+from qiskit import QuantumCircuit, transpile
 from qiskit_aer import Aer
 import logging
 
@@ -35,7 +35,7 @@ def quantum_move():
         qc.measure(0, 0)  # Measure the qubit
 
         backend = Aer.get_backend('qasm_simulator')
-        job = execute(qc, backend, shots=1, seed_simulator=int(seed))
+        job = transpile(qc, backend, shots=1, seed_simulator=int(seed))
         result = job.result().get_counts()
         
         logger.info(f"Quantum result: {result}")
