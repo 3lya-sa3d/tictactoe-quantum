@@ -78,6 +78,7 @@ document.addEventListener("DOMContentLoaded", () => {
       <p>The quantum backend is determining which position becomes "real".</p>
     `,
     collapsed: (move, cell) => `
+      <h2>You now have a definate state!</h2>
       <h3>Wavefunction Collapse</h3>
       <p>Move ${move} has collapsed to cell ${cell}!</p>
       <p>The quantum superposition has been measured, forcing the system to choose one definite state.</p>
