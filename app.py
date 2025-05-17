@@ -6,8 +6,8 @@ app = Flask(__name__)
 CORS(app)
 
 @app.route('/')
-def hello():
-    return 'Quantum backend alive.'
+def home():
+    return 'Quantum backend is alive.'
 
 @app.route('/quantum-move', methods=['POST'])
 def quantum_move():
@@ -21,6 +21,9 @@ def quantum_move():
     backend = Aer.get_backend('qasm_simulator')
     job = execute(qc, backend, shots=1, seed_simulator=int(seed))
     result = job.result().get_counts()
-    collapse_result = 0 if '0' in result else 1
 
+    collapse_result = 0 if '0' in result else 1
     return jsonify({'collapse_result': collapse_result})
+
+if __name__ == '__main__':
+    app.run(host='0.0.0.0', port=8080)
