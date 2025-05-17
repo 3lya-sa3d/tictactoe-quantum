@@ -7,6 +7,8 @@ document.addEventListener("DOMContentLoaded", () => {
   const messageArea = document.getElementById("message-area")
   const resetButton = document.getElementById("reset-button")
   const statusIndicator = document.getElementById("status-indicator")
+  const currentExplanation = document.getElementById("current-explanation")
+  const moveHistory = document.getElementById("move-history")
 
   // API endpoint - will work both locally and when deployed
   const API_URL = window.location.origin + "/quantum-move"
@@ -24,6 +26,85 @@ document.addEventListener("DOMContentLoaded", () => {
       })),
     gameActive: true,
     backendAvailable: false,
+    moveLog: [],
+  }
+
+  // Explanation templates
+  const explanations = {
+    welcome: `
+      <h3>Welcome to Quantum Tic-Tac-Toe!</h3>
+      <p>This game demonstrates quantum mechanics principles like superposition and measurement.</p>
+      <p>Unlike classical tic-tac-toe, quantum moves exist in multiple places simultaneously until they "collapse" to a single location.</p>
+    `,
+    selectingFirst: `
+      <h3>Quantum Superposition</h3>
+      <p>In quantum mechanics, particles can exist in multiple states simultaneously until measured.</p>
+      <p>You're selecting the first cell for your quantum move. This move will exist in two places at once!</p>
+      <p>This demonstrates the principle of <strong>quantum superposition</strong>.</p>
+    `,
+    selectingSecond: `
+      <h3>Completing Superposition</h3>
+      <p>Now select the second cell for your quantum move.</p>
+      <p>Your move will exist in both locations simultaneously - neither position is "real" yet.</p>
+      <p>This is similar to Schrödinger's cat being both alive and dead until observed.</p>
+    `,
+    quantumMove: `
+      <h3>Quantum Entanglement</h3>
+      <p>Your move now exists in two places at once! These positions are <strong>entangled</strong>.</p>
+      <p>When one position is measured (collapses), the other position will be affected instantly.</p>
+      <p>Einstein called this "spooky action at a distance."</p>
+    `,
+    collapsing: `
+      <h3>Quantum Measurement</h3>
+      <p>It's time for a quantum measurement!</p>
+      <p>We're using a quantum circuit with a <strong>Hadamard gate</strong> to create a 50/50 superposition.</p>
+      <p>When measured, the quantum state will collapse to either position with equal probability.</p>
+      <p>The quantum backend is determining which position becomes "real".</p>
+    `,
+    collapsed: (move, cell) => `
+      <h3>Wavefunction Collapse</h3>
+      <p>Move ${move} has collapsed to cell ${cell}!</p>
+      <p>The quantum superposition has been measured, forcing the system to choose one definite state.</p>
+      <p>This demonstrates <strong>wavefunction collapse</strong> - a fundamental quantum mechanics concept.</p>
+      <p>All other instances of this move have disappeared, as they were just probability waves.</p>
+    `,
+    win: (player) => `
+      <h3>Game Over - ${player} Wins!</h3>
+      <p>Player ${player} has won the game by creating a line of classical (collapsed) moves.</p>
+      <p>In quantum computing, the final measurement gives us our answer after quantum operations.</p>
+      <p>Similarly, the winner is determined after quantum moves collapse to classical positions.</p>
+    `,
+    draw: `
+      <h3>Game Over - Draw!</h3>
+      <p>The game has ended in a draw.</p>
+      <p>Even with quantum mechanics, some problems can have no clear winner!</p>
+      <p>This is similar to certain quantum algorithms that may not always produce a definitive answer.</p>
+    `,
+  }
+
+  // Update the explanation area
+  function updateExplanation(key, ...args) {
+    if (explanations[key]) {
+      if (typeof explanations[key] === "function") {
+        currentExplanation.innerHTML = explanations[key](...args)
+      } else {
+        currentExplanation.innerHTML = explanations[key]
+      }
+    }
+  }
+
+  // Add move to history
+  function addMoveToHistory(text) {
+    const li = document.createElement("li")
+    li.textContent = text
+    gameState.moveLog.push(text)
+
+    // Add to DOM if element exists
+    if (moveHistory) {
+      moveHistory.appendChild(li)
+      // Scroll to bottom
+      moveHistory.scrollTop = moveHistory.scrollHeight
+    }
   }
 
   // Check if backend is available
@@ -62,6 +143,7 @@ document.addEventListener("DOMContentLoaded", () => {
         })),
       gameActive: true,
       backendAvailable: gameState.backendAvailable,
+      moveLog: [],
     }
 
     cells.forEach((cell) => {
@@ -72,6 +154,14 @@ document.addEventListener("DOMContentLoaded", () => {
     currentPlayerElement.textContent = "X"
     moveNumberElement.textContent = "1"
     messageArea.textContent = "Select two cells for your quantum move"
+
+    // Reset move history
+    if (moveHistory) {
+      moveHistory.innerHTML = ""
+    }
+
+    // Update explanation
+    updateExplanation("welcome")
 
     // Check backend status
     checkBackendStatus()
@@ -90,6 +180,13 @@ document.addEventListener("DOMContentLoaded", () => {
       gameState.selectedCells.splice(selectedIndex, 1)
       cells[index].classList.remove("selected")
       messageArea.textContent = `Cell deselected. Select ${2 - gameState.selectedCells.length} cell(s)`
+
+      // Update explanation based on selection state
+      if (gameState.selectedCells.length === 0) {
+        updateExplanation("welcome")
+      } else {
+        updateExplanation("selectingSecond")
+      }
       return
     }
 
@@ -107,6 +204,7 @@ document.addEventListener("DOMContentLoaded", () => {
       placeQuantumMove()
     } else {
       messageArea.textContent = "Select one more cell"
+      updateExplanation("selectingSecond")
     }
   }
 
@@ -119,6 +217,9 @@ document.addEventListener("DOMContentLoaded", () => {
     gameState.board[cell1].quantum.push(move)
     gameState.board[cell2].quantum.push(move)
 
+    // Add to move history
+    addMoveToHistory(`Move ${move}: Placed in cells ${cell1} and ${cell2} (quantum)`)
+
     // Clear selection
     gameState.selectedCells.forEach((index) => {
       cells[index].classList.remove("selected")
@@ -127,6 +228,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Update UI
     renderBoard()
+
+    // Update explanation
+    updateExplanation("quantumMove")
 
     // Check if we need to collapse
     if (gameState.moveNumber % 3 === 0) {
@@ -138,12 +242,18 @@ document.addEventListener("DOMContentLoaded", () => {
       currentPlayerElement.textContent = gameState.currentPlayer
       moveNumberElement.textContent = gameState.moveNumber
       messageArea.textContent = "Select two cells for your quantum move"
+
+      // Update explanation for next player
+      updateExplanation("selectingFirst")
     }
   }
 
   // Collapse a quantum move
   async function collapseMove(move, cell1, cell2) {
     messageArea.textContent = `Collapsing move ${move}...`
+
+    // Update explanation
+    updateExplanation("collapsing")
 
     try {
       let collapseResult
@@ -189,9 +299,15 @@ document.addEventListener("DOMContentLoaded", () => {
         }
       }
 
+      // Add to move history
+      addMoveToHistory(`Move ${move}: Collapsed to cell ${collapseIndex} (classical ${player})`)
+
       // Update UI
       renderBoard()
       messageArea.textContent = `Move ${move} collapsed to cell ${collapseIndex}`
+
+      // Update explanation
+      updateExplanation("collapsed", move, collapseIndex)
 
       // Check for win
       checkWinCondition()
@@ -204,6 +320,7 @@ document.addEventListener("DOMContentLoaded", () => {
         moveNumberElement.textContent = gameState.moveNumber
         setTimeout(() => {
           messageArea.textContent = "Select two cells for your quantum move"
+          updateExplanation("selectingFirst")
         }, 1500)
       }
     } catch (error) {
@@ -232,9 +349,15 @@ document.addEventListener("DOMContentLoaded", () => {
         }
       }
 
+      // Add to move history
+      addMoveToHistory(`Move ${move}: Collapsed to cell ${collapseIndex} (classical ${player}, fallback)`)
+
       // Update UI
       renderBoard()
       messageArea.textContent = `Move ${move} collapsed to cell ${collapseIndex} (fallback)`
+
+      // Update explanation
+      updateExplanation("collapsed", move, collapseIndex)
 
       // Check for win
       checkWinCondition()
@@ -247,6 +370,7 @@ document.addEventListener("DOMContentLoaded", () => {
         moveNumberElement.textContent = gameState.moveNumber
         setTimeout(() => {
           messageArea.textContent = "Select two cells for your quantum move"
+          updateExplanation("selectingFirst")
         }, 1500)
       }
     }
@@ -275,6 +399,12 @@ document.addEventListener("DOMContentLoaded", () => {
       ) {
         gameState.gameActive = false
         messageArea.textContent = `Player ${gameState.board[a].classical} wins!`
+
+        // Add to move history
+        addMoveToHistory(`Game over: Player ${gameState.board[a].classical} wins!`)
+
+        // Update explanation
+        updateExplanation("win", gameState.board[a].classical)
         return
       }
     }
@@ -284,6 +414,12 @@ document.addEventListener("DOMContentLoaded", () => {
     if (allClassical) {
       gameState.gameActive = false
       messageArea.textContent = "Game ended in a draw!"
+
+      // Add to move history
+      addMoveToHistory(`Game over: Draw!`)
+
+      // Update explanation
+      updateExplanation("draw")
     }
   }
 
