@@ -1,6 +1,7 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
-from qiskit import QuantumCircuit, Aer, execute
+from qiskit import QuantumCircuit, execute
+from qiskit_aer import Aer
 import logging
 
 # Set up logging
