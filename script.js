@@ -31,15 +31,19 @@ document.addEventListener("DOMContentLoaded", () => {
     try {
       const response = await fetch(window.location.origin + "/", { method: "GET" })
       if (response.ok) {
-        statusIndicator.textContent = "Connected"
-        statusIndicator.style.color = "#00ff00"
+        if (statusIndicator) {
+          statusIndicator.textContent = "Connected"
+          statusIndicator.style.color = "#00ff00"
+        }
         gameState.backendAvailable = true
       } else {
         throw new Error("Backend not available")
       }
     } catch (error) {
-      statusIndicator.textContent = "Disconnected (using fallback)"
-      statusIndicator.style.color = "#ff0000"
+      if (statusIndicator) {
+        statusIndicator.textContent = "Disconnected (using fallback)"
+        statusIndicator.style.color = "#ff0000"
+      }
       gameState.backendAvailable = false
     }
   }
@@ -206,8 +210,10 @@ document.addEventListener("DOMContentLoaded", () => {
       console.error("Error during collapse:", error)
 
       // Update backend status
-      statusIndicator.textContent = "Disconnected (using fallback)"
-      statusIndicator.style.color = "#ff0000"
+      if (statusIndicator) {
+        statusIndicator.textContent = "Disconnected (using fallback)"
+        statusIndicator.style.color = "#ff0000"
+      }
       gameState.backendAvailable = false
 
       // Fallback to random collapse
