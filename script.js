@@ -166,6 +166,7 @@ document.addEventListener("DOMContentLoaded", () => {
         throw new Error("Backend not available")
       }
     } catch (error) {
+      console.error("checkBackendStatus error:", error)
       if (statusIndicator) {
         statusIndicator.textContent = "Disconnected (using fallback)"
         statusIndicator.style.color = "#ff0000"
