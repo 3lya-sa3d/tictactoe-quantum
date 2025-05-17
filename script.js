@@ -11,7 +11,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const moveHistory = document.getElementById("move-history")
 
   // API endpoint - will work both locally and when deployed
-  const API_URL = "https://tictactoe-quantum.onrender.com"
+  const API_URL = "http://localhost:8080/quantum-move"
 
   // Game State
   let gameState = {
