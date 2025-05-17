@@ -11,11 +11,12 @@
         <h1>Quantum Tic-Tac-Toe</h1>
         
         <div class="game-info">
-            <div id="turn-indicator">Current Player: <span id="current-player">X</span> (Move #<span id="move-number">1</span>)</div>
+            <div id="turn-display">Current Player: <span id="current-player">X</span> (Move #<span id="move-number">1</span>)</div>
             <div id="message-area">Select two cells for your quantum move</div>
+            <div id="backend-status">Backend Status: <span id="status-indicator">Checking...</span></div>
         </div>
         
-        <div class="game-board">
+        <div class="board" id="board">
             <div class="cell" data-index="0"></div>
             <div class="cell" data-index="1"></div>
             <div class="cell" data-index="2"></div>
