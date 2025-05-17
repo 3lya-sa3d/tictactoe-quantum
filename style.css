@@ -83,7 +83,8 @@ h1 {
 
 .cell:hover {
     background-color: #2a2a2a;
-    border-color: #444;
+    border: 2px solid #00ff00; /* Green outline on hover */
+    box-shadow: 0 0 5px rgba(0, 255, 0, 0.5);
 }
 
 .quantum-move {
@@ -92,6 +93,7 @@ h1 {
     padding: 2px 4px;
     border-radius: 3px;
     background-color: rgba(0, 100, 0, 0.3);
+    color: #00ff00; /* Make quantum moves green */
 }
 
 .classical-move {
@@ -103,6 +105,7 @@ h1 {
 
 .selected {
     border: 2px solid #00ff00;
+    box-shadow: 0 0 5px rgba(0, 255, 0, 0.5);
 }
 
 button {
@@ -119,5 +122,5 @@ button {
 
 button:hover {
     background-color: #2a2a2a;
-    border-color: #444;
+    border-color: #00ff00;
 }
