@@ -1,0 +1,109 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Courier New', monospace;
+}
+
+body {
+    background-color: #121212;
+    color: #e0e0e0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 20px;
+}
+
+.container {
+    max-width: 500px;
+    width: 100%;
+    text-align: center;
+}
+
+h1 {
+    margin-bottom: 20px;
+    color: #00ff00;
+    text-shadow: 0 0 5px rgba(0, 255, 0, 0.5);
+}
+
+.game-info {
+    margin-bottom: 20px;
+    padding: 10px;
+    background-color: #1e1e1e;
+    border: 1px solid #333;
+    border-radius: 4px;
+}
+
+#turn-indicator {
+    margin-bottom: 10px;
+}
+
+#current-player {
+    color: #00ff00;
+    font-weight: bold;
+}
+
+#message-area {
+    color: #cccccc;
+    min-height: 20px;
+}
+
+.game-board {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-gap: 10px;
+    margin-bottom: 20px;
+}
+
+.cell {
+    aspect-ratio: 1;
+    background-color: #1e1e1e;
+    border: 1px solid #333;
+    border-radius: 4px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    padding: 5px;
+    font-size: 14px;
+    transition: all 0.2s;
+}
+
+.cell:hover {
+    background-color: #2a2a2a;
+    border-color: #444;
+}
+
+.quantum-move {
+    display: inline-block;
+    margin: 2px;
+    padding: 2px 4px;
+    border-radius: 3px;
+    background-color: rgba(0, 100, 0, 0.3);
+}
+
+.classical-move {
+    color: #00ff00;
+    font-size: 24px;
+    font-weight: bold;
+    text-shadow: 0 0 5px rgba(0, 255, 0, 0.5);
+    background-color: transparent;
+}
+
+#reset-button {
+    background-color: #1e1e1e;
+    color: #e0e0e0;
+    border: 1px solid #333;
+    padding: 10px 20px;
+    cursor: pointer;
+    font-size: 16px;
+    border-radius: 4px;
+    transition: all 0.2s;
+}
+
+#reset-button:hover {
+    background-color: #2a2a2a;
+    border-color: #444;
+}
