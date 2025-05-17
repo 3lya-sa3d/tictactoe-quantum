@@ -35,7 +35,7 @@ h1 {
     border-radius: 4px;
 }
 
-#turn-indicator {
+#turn-display {
     margin-bottom: 10px;
 }
 
@@ -47,9 +47,19 @@ h1 {
 #message-area {
     color: #cccccc;
     min-height: 20px;
+    margin-bottom: 10px;
 }
 
-.game-board {
+#backend-status {
+    margin-top: 10px;
+    font-size: 0.9em;
+}
+
+#status-indicator {
+    font-weight: bold;
+}
+
+.board {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     grid-gap: 10px;
@@ -89,10 +99,13 @@ h1 {
     font-size: 24px;
     font-weight: bold;
     text-shadow: 0 0 5px rgba(0, 255, 0, 0.5);
-    background-color: transparent;
 }
 
-#reset-button {
+.selected {
+    border: 2px solid #00ff00;
+}
+
+button {
     background-color: #1e1e1e;
     color: #e0e0e0;
     border: 1px solid #333;
@@ -101,9 +114,10 @@ h1 {
     font-size: 16px;
     border-radius: 4px;
     transition: all 0.2s;
+    font-family: 'Courier New', monospace;
 }
 
-#reset-button:hover {
+button:hover {
     background-color: #2a2a2a;
     border-color: #444;
 }
