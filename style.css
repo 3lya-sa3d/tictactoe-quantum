@@ -15,16 +15,81 @@ body {
     padding: 20px;
 }
 
-.container {
-    max-width: 500px;
+.main-container {
+    display: flex;
+    flex-direction: row;
+    gap: 30px;
+    max-width: 1000px;
     width: 100%;
+}
+
+.game-container {
+    flex: 1;
+    max-width: 500px;
     text-align: center;
 }
 
-h1 {
+.explanation-sidebar {
+    flex: 1;
+    max-width: 400px;
+    background-color: #1a1a1a;
+    border: 1px solid #333;
+    border-radius: 8px;
+    padding: 20px;
+    height: fit-content;
+}
+
+h1, h2 {
     margin-bottom: 20px;
     color: #00ff00;
     text-shadow: 0 0 5px rgba(0, 255, 0, 0.5);
+}
+
+h2 {
+    font-size: 1.5rem;
+    border-bottom: 1px solid #333;
+    padding-bottom: 10px;
+}
+
+h3 {
+    color: #00cc00;
+    margin: 10px 0;
+    font-size: 1.2rem;
+}
+
+.explanation-content, .explanation-section {
+    margin-bottom: 20px;
+    line-height: 1.5;
+}
+
+.explanation-content p, .explanation-section p {
+    margin-bottom: 10px;
+    text-align: left;
+}
+
+.highlighted {
+    background-color: rgba(0, 255, 0, 0.1);
+    border-left: 3px solid #00ff00;
+    padding-left: 10px;
+}
+
+#move-history {
+    list-style-type: none;
+    text-align: left;
+    max-height: 200px;
+    overflow-y: auto;
+    padding: 5px;
+    background-color: #222;
+    border-radius: 4px;
+}
+
+#move-history li {
+    padding: 5px;
+    border-bottom: 1px solid #333;
+}
+
+#move-history li:last-child {
+    border-bottom: none;
 }
 
 .game-info {
@@ -123,4 +188,16 @@ button {
 button:hover {
     background-color: #2a2a2a;
     border-color: #00ff00;
+}
+
+/* Responsive design */
+@media (max-width: 900px) {
+    .main-container {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .game-container, .explanation-sidebar {
+        max-width: 100%;
+    }
 }
