@@ -19,34 +19,43 @@ body {
     display: flex;
     flex-direction: row;
     gap: 30px;
-    max-width: 1000px;
+    max-width: 1100px;
     width: 100%;
+    align-items: flex-start;
 }
 
 .game-container {
-    flex: 1;
-    max-width: 500px;
+    flex: 0 0 400px; /* Fixed width for game container */
     text-align: center;
 }
 
 .explanation-sidebar {
     flex: 1;
-    max-width: 450px;
     background-color: #1a1a1a;
     border: 1px solid #333;
     border-radius: 8px;
     padding: 20px;
-    height: fit-content;
+    position: sticky;
+    top: 20px;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    display: flex;
+    flex-direction: column;
 }
 
-h1, h2 {
+h1 {
     margin-bottom: 20px;
     color: #00ff00;
     text-shadow: 0 0 5px rgba(0, 255, 0, 0.5);
+    font-size: 1.8rem;
 }
 
 h2 {
-    font-size: 1.5rem;
+    margin-bottom: 15px;
+    color: #00ff00;
+    text-shadow: 0 0 5px rgba(0, 255, 0, 0.5);
+    font-size: 1.4rem;
     border-bottom: 1px solid #333;
     padding-bottom: 10px;
 }
@@ -54,54 +63,82 @@ h2 {
 h3 {
     color: #00cc00;
     margin: 10px 0;
-    font-size: 1.2rem;
+    font-size: 1.1rem;
 }
 
 .explanation-content, .explanation-section {
-    margin-bottom: 20px;
+    margin-bottom: 15px;
     line-height: 1.5;
 }
 
 .explanation-content p, .explanation-section p {
-    margin-bottom: 10px;
+    margin-bottom: 8px;
     text-align: left;
+    font-size: 0.85rem;
 }
 
 .highlighted {
     background-color: rgba(0, 255, 0, 0.1);
     border-left: 3px solid #00ff00;
-    padding-left: 10px;
+    padding: 8px 12px;
+    margin: 8px 0;
+    border-radius: 0 4px 4px 0;
+}
+
+.sidebar-section {
+    margin-bottom: 20px;
+    flex: 0 0 auto;
+}
+
+.move-log-container {
+    flex: 1 1 auto;
+    min-height: 200px;
+    display: flex;
+    flex-direction: column;
 }
 
 #move-history {
     list-style-type: none;
     text-align: left;
+    flex: 1;
+    min-height: 150px;
     max-height: 200px;
     overflow-y: auto;
-    padding: 5px;
+    padding: 8px;
     background-color: #222;
     border-radius: 4px;
+    margin-top: 10px;
+    scrollbar-width: thin;
+    scrollbar-color: #00ff00 #222;
+    font-size: 0.85rem;
 }
 
 #move-history li {
-    padding: 5px;
+    padding: 5px 8px;
     border-bottom: 1px solid #333;
+    font-size: 0.85rem;
 }
 
 #move-history li:last-child {
     border-bottom: none;
 }
 
+#move-history li:nth-child(odd) {
+    background-color: #1a1a1a;
+}
+
 .game-info {
     margin-bottom: 20px;
-    padding: 10px;
+    padding: 12px;
     background-color: #1e1e1e;
     border: 1px solid #333;
     border-radius: 4px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
 #turn-display {
     margin-bottom: 10px;
+    font-size: 1.1rem;
 }
 
 #current-player {
@@ -113,11 +150,17 @@ h3 {
     color: #cccccc;
     min-height: 20px;
     margin-bottom: 10px;
+    padding: 5px;
+    font-size: 0.95rem;
 }
 
 #backend-status {
     margin-top: 10px;
-    font-size: 0.9em;
+    font-size: 0.85rem;
+    padding: 5px;
+    background-color: #222;
+    border-radius: 4px;
+    display: inline-block;
 }
 
 #status-indicator {
@@ -127,8 +170,11 @@ h3 {
 .board {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    grid-gap: 10px;
-    margin-bottom: 20px;
+    grid-gap: 8px;
+    margin: 0 auto 20px;
+    position: relative;
+    width: 300px;
+    height: 300px;
 }
 
 .cell {
@@ -144,6 +190,7 @@ h3 {
     padding: 5px;
     font-size: 14px;
     transition: all 0.2s;
+    position: relative;
 }
 
 .cell:hover {
@@ -159,13 +206,14 @@ h3 {
     border-radius: 3px;
     background-color: rgba(0, 100, 0, 0.3);
     color: #00ff00; /* Make quantum moves green */
+    font-size: 0.85rem;
 }
 
 .classical-move {
     color: #00ff00;
-    font-size: 24px;
+    font-size: 36px; /* Bigger X and O */
     font-weight: bold;
-    text-shadow: 0 0 5px rgba(0, 255, 0, 0.5);
+    text-shadow: 0 0 8px rgba(0, 255, 0, 0.6);
 }
 
 .selected {
@@ -183,11 +231,106 @@ button {
     border-radius: 4px;
     transition: all 0.2s;
     font-family: 'Courier New', monospace;
+    margin-top: 10px;
 }
 
 button:hover {
     background-color: #2a2a2a;
     border-color: #00ff00;
+    box-shadow: 0 0 5px rgba(0, 255, 0, 0.3);
+}
+
+/* Win line styles */
+.win-line {
+    position: absolute;
+    background-color: rgba(0, 255, 0, 0.6);
+    z-index: 10;
+    transform-origin: center;
+    box-shadow: 0 0 10px rgba(0, 255, 0, 0.8);
+}
+
+.win-line.horizontal {
+    height: 5px;
+    width: 100%;
+    left: 0;
+}
+
+.win-line.vertical {
+    width: 5px;
+    height: 100%;
+    top: 0;
+}
+
+.win-line.diagonal-1 {
+    height: 5px;
+    width: 140%;
+    left: -20%;
+    top: 50%;
+    transform: rotate(45deg);
+}
+
+.win-line.diagonal-2 {
+    height: 5px;
+    width: 140%;
+    left: -20%;
+    top: 50%;
+    transform: rotate(-45deg);
+}
+
+/* FAQ accordion styles */
+.faq-container {
+    margin-top: 20px;
+    border-top: 1px solid #333;
+    padding-top: 15px;
+}
+
+.faq-item {
+    margin-bottom: 10px;
+    border: 1px solid #333;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.faq-question {
+    background-color: #222;
+    padding: 10px;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.9rem;
+    font-weight: bold;
+    color: #00cc00;
+}
+
+.faq-question:hover {
+    background-color: #2a2a2a;
+}
+
+.faq-answer {
+    padding: 0;
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease, padding 0.3s ease;
+    background-color: #1a1a1a;
+}
+
+.faq-answer.active {
+    padding: 10px;
+    max-height: 500px;
+}
+
+.faq-answer p {
+    font-size: 0.85rem;
+    margin-bottom: 8px;
+}
+
+.faq-toggle {
+    transition: transform 0.3s ease;
+}
+
+.faq-toggle.active {
+    transform: rotate(180deg);
 }
 
 /* Responsive design */
@@ -198,6 +341,13 @@ button:hover {
     }
     
     .game-container, .explanation-sidebar {
-        max-width: 100%;
+        flex: 1 1 auto;
+        width: 100%;
+        max-width: 500px;
+    }
+    
+    .explanation-sidebar {
+        margin-top: 30px;
+        max-height: 500px;
     }
 }
