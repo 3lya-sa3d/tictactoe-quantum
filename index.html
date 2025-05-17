@@ -7,28 +7,53 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="container">
-        <h1>Quantum Tic-Tac-Toe</h1>
-        
-        <div class="game-info">
-            <div id="turn-display">Current Player: <span id="current-player">X</span> (Move #<span id="move-number">1</span>)</div>
-            <div id="message-area">Select two cells for your quantum move</div>
-            <div id="backend-status">Backend Status: <span id="status-indicator">Checking...</span></div>
+    <div class="main-container">
+        <div class="game-container">
+            <h1>Quantum Tic-Tac-Toe</h1>
+            
+            <div class="game-info">
+                <div id="turn-display">Current Player: <span id="current-player">X</span> (Move #<span id="move-number">1</span>)</div>
+                <div id="message-area">Select two cells for your quantum move</div>
+                <div id="backend-status">Backend Status: <span id="status-indicator">Checking...</span></div>
+            </div>
+            
+            <div class="board" id="board">
+                <div class="cell" data-index="0"></div>
+                <div class="cell" data-index="1"></div>
+                <div class="cell" data-index="2"></div>
+                <div class="cell" data-index="3"></div>
+                <div class="cell" data-index="4"></div>
+                <div class="cell" data-index="5"></div>
+                <div class="cell" data-index="6"></div>
+                <div class="cell" data-index="7"></div>
+                <div class="cell" data-index="8"></div>
+            </div>
+            
+            <button id="reset-button">Reset Game</button>
         </div>
         
-        <div class="board" id="board">
-            <div class="cell" data-index="0"></div>
-            <div class="cell" data-index="1"></div>
-            <div class="cell" data-index="2"></div>
-            <div class="cell" data-index="3"></div>
-            <div class="cell" data-index="4"></div>
-            <div class="cell" data-index="5"></div>
-            <div class="cell" data-index="6"></div>
-            <div class="cell" data-index="7"></div>
-            <div class="cell" data-index="8"></div>
+        <div class="explanation-sidebar">
+            <h2>Quantum Mechanics Explained</h2>
+            <div id="current-explanation" class="explanation-content">
+                <h3>Welcome to Quantum Tic-Tac-Toe!</h3>
+                <p>This game demonstrates quantum mechanics principles like superposition and measurement.</p>
+                <p>Unlike classical tic-tac-toe, quantum moves exist in multiple places simultaneously until they "collapse" to a single location.</p>
+            </div>
+            
+            <div class="explanation-section">
+                <h3>How It Works:</h3>
+                <p><strong>Quantum Move:</strong> Each move is placed in two cells simultaneously, existing in "superposition".</p>
+                <p><strong>Collapse:</strong> Every 3rd move, a quantum measurement determines which of the two positions becomes "real".</p>
+                <p><strong>Quantum Circuit:</strong> A Hadamard gate creates a superposition that has a 50/50 chance of collapsing to either position.</p>
+            </div>
+            
+            <div id="move-log" class="explanation-section">
+                <h3>Move Log:</h3>
+                <ul id="move-history">
+                    <!-- Move history will be populated here -->
+                </ul>
+            </div>
         </div>
-        
-        <button id="reset-button">Reset Game</button>
     </div>
     
     <script src="script.js"></script>
