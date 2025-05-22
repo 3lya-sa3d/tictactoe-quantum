@@ -47,77 +47,80 @@
                 <p><strong>Quantum Move:</strong> Each move is placed in two cells simultaneously, existing in "superposition".</p>
                 <p><strong>Collapse:</strong> Every 3rd move, a quantum measurement determines which of the two positions becomes "real".</p>
                 <p><strong>Entanglement Loops:</strong> When quantum moves form a closed loop, they must be measured to resolve the entanglement.</p>
+                <p><strong>Superposition Limit:</strong> A cell can only hold 5 quantum moves before it must collapse.</p>
             </div>
-            
-            <div class="move-log-container">
-                <h3>Move Log:</h3>
-                <ul id="move-history">
-                    <!-- Move history will be populated here -->
-                </ul>
+        </div>
+    </div>
+    
+    <div class="move-log-section">
+        <h2>Move Log</h2>
+        <div class="move-log-container">
+            <ul id="move-history">
+                <!-- Move history will be populated here -->
+            </ul>
+        </div>
+    </div>
+    
+    <div class="faq-section">
+        <h2>Quantum Mechanics Q&A</h2>
+        
+        <div class="faq-item">
+            <div class="faq-question" onclick="toggleFAQ(this)">
+                What is quantum superposition?
+                <span class="faq-toggle">▼</span>
             </div>
-            
-            <div class="faq-container">
-                <h3>Quantum Mechanics Q&A</h3>
-                
-                <div class="faq-item">
-                    <div class="faq-question" onclick="toggleFAQ(this)">
-                        What is quantum superposition?
-                        <span class="faq-toggle">▼</span>
-                    </div>
-                    <div class="faq-answer">
-                        <p>Quantum superposition is when a quantum system exists in multiple states simultaneously until measured. In this game, each move exists in two different cells at once until a measurement forces it to "choose" one location.</p>
-                        <p>This is similar to Schrödinger's famous thought experiment where a cat is both alive and dead until observed.</p>
-                    </div>
-                </div>
-                
-                <div class="faq-item">
-                    <div class="faq-question" onclick="toggleFAQ(this)">
-                        What are entanglement loops?
-                        <span class="faq-toggle">▼</span>
-                    </div>
-                    <div class="faq-answer">
-                        <p>Entanglement loops occur when quantum moves form a cycle of dependencies. For example, if move X1 is in cells 0 and 4, move O2 is in cells 4 and 8, and move X3 is in cells 0 and 8, they form a loop.</p>
-                        <p>In real quantum tic-tac-toe, these loops trigger collapses. In our simplified version, we collapse every 3rd move regardless of loop formation.</p>
-                    </div>
-                </div>
-                
-                <div class="faq-item">
-                    <div class="faq-question" onclick="toggleFAQ(this)">
-                        How does the quantum circuit work?
-                        <span class="faq-toggle">▼</span>
-                    </div>
-                    <div class="faq-answer">
-                        <p>We use a quantum circuit with a Hadamard gate, which creates a perfect 50/50 superposition of |0⟩ and |1⟩ states.</p>
-                        <p>When measured, this superposition collapses randomly to either 0 or 1 with equal probability, determining which of the two cells gets the classical move.</p>
-                        <p>The backend uses Qiskit to simulate this quantum circuit and measurement.</p>
-                    </div>
-                </div>
-                
-                <div class="faq-item">
-                    <div class="faq-question" onclick="toggleFAQ(this)">
-                        What is wavefunction collapse?
-                        <span class="faq-toggle">▼</span>
-                    </div>
-                    <div class="faq-answer">
-                        <p>Wavefunction collapse is when a quantum system in superposition is forced into a single definite state through measurement.</p>
-                        <p>Before measurement, the system exists as a probability wave (wavefunction) spread across multiple possible states. Measurement "collapses" this wave into one specific outcome.</p>
-                        <p>In our game, this happens when a quantum move that exists in two cells collapses to just one cell.</p>
-                    </div>
-                </div>
-                
-                <div class="faq-item">
-                    <div class="faq-question" onclick="toggleFAQ(this)">
-                        Why is this game quantum?
-                        <span class="faq-toggle">▼</span>
-                    </div>
-                    <div class="faq-answer">
-                        <p>This game demonstrates three key quantum principles:</p>
-                        <p>1. <strong>Superposition:</strong> Moves exist in multiple places simultaneously</p>
-                        <p>2. <strong>Entanglement:</strong> Quantum moves are connected across cells</p>
-                        <p>3. <strong>Measurement:</strong> Observing the system forces it to choose a definite state</p>
-                        <p>The backend uses an actual quantum circuit simulator to determine collapses, making this a true quantum-inspired game!</p>
-                    </div>
-                </div>
+            <div class="faq-answer">
+                <p>Quantum superposition is when a quantum system exists in multiple states simultaneously until measured. In this game, each move exists in two different cells at once until a measurement forces it to "choose" one location.</p>
+                <p>This is similar to Schrödinger's famous thought experiment where a cat is both alive and dead until observed.</p>
+            </div>
+        </div>
+        
+        <div class="faq-item">
+            <div class="faq-question" onclick="toggleFAQ(this)">
+                What are entanglement loops?
+                <span class="faq-toggle">▼</span>
+            </div>
+            <div class="faq-answer">
+                <p>Entanglement loops occur when quantum moves form a cycle of dependencies. For example, if move X1 is in cells 0 and 4, move O2 is in cells 4 and 8, and move X3 is in cells 0 and 8, they form a loop.</p>
+                <p>In real quantum tic-tac-toe, these loops trigger collapses. In our simplified version, we collapse every 3rd move regardless of loop formation.</p>
+            </div>
+        </div>
+        
+        <div class="faq-item">
+            <div class="faq-question" onclick="toggleFAQ(this)">
+                How does the quantum circuit work?
+                <span class="faq-toggle">▼</span>
+            </div>
+            <div class="faq-answer">
+                <p>We use a quantum circuit with a Hadamard gate, which creates a perfect 50/50 superposition of |0⟩ and |1⟩ states.</p>
+                <p>When measured, this superposition collapses randomly to either 0 or 1 with equal probability, determining which of the two cells gets the classical move.</p>
+                <p>The backend uses Qiskit to simulate this quantum circuit and measurement.</p>
+            </div>
+        </div>
+        
+        <div class="faq-item">
+            <div class="faq-question" onclick="toggleFAQ(this)">
+                What is wavefunction collapse?
+                <span class="faq-toggle">▼</span>
+            </div>
+            <div class="faq-answer">
+                <p>Wavefunction collapse is when a quantum system in superposition is forced into a single definite state through measurement.</p>
+                <p>Before measurement, the system exists as a probability wave (wavefunction) spread across multiple possible states. Measurement "collapses" this wave into one specific outcome.</p>
+                <p>In our game, this happens when a quantum move that exists in two cells collapses to just one cell.</p>
+            </div>
+        </div>
+        
+        <div class="faq-item">
+            <div class="faq-question" onclick="toggleFAQ(this)">
+                Why is this game quantum?
+                <span class="faq-toggle">▼</span>
+            </div>
+            <div class="faq-answer">
+                <p>This game demonstrates three key quantum principles:</p>
+                <p>1. <strong>Superposition:</strong> Moves exist in multiple places simultaneously</p>
+                <p>2. <strong>Entanglement:</strong> Quantum moves are connected across cells</p>
+                <p>3. <strong>Measurement:</strong> Observing the system forces it to choose a definite state</p>
+                <p>The backend uses an actual quantum circuit simulator to determine collapses, making this a true quantum-inspired game!</p>
             </div>
         </div>
     </div>
