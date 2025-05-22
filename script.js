@@ -11,7 +11,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const moveHistory = document.getElementById("move-history")
 
   // API endpoint - will work both locally and when deployed
-  const API_URL = "http://localhost:8080/quantum-move"
+  const API_URL = window.location.origin + "/quantum-move"
 
   // Game State
   let gameState = {
@@ -30,6 +30,9 @@ document.addEventListener("DOMContentLoaded", () => {
     winLine: null,
     currentExplanationKey: "welcome",
   }
+
+  // Constants
+  const MAX_SUPERPOSITIONS = 5 // Maximum number of superpositions per cell before forced collapse
 
   // Win patterns with their line types
   const winPatterns = [
@@ -77,14 +80,20 @@ document.addEventListener("DOMContentLoaded", () => {
       <p>When measured, the quantum state will collapse to either position with equal probability.</p>
       <p>The quantum backend is determining which position becomes "real".</p>
     `,
+    collapsingOverload: `
+      <h3>Quantum Decoherence</h3>
+      <p>A cell has reached the maximum number of superpositions (${MAX_SUPERPOSITIONS})!</p>
+      <p>In quantum systems, too many interactions with the environment can cause decoherence.</p>
+      <p>This forces a measurement to occur, collapsing the quantum state.</p>
+      <p>We're now measuring which position will become "real".</p>
+    `,
     collapsed: (move, cell) => `
-      <h2>You now have a definate state!</h2>
       <h3>Wavefunction Collapse</h3>
       <p>Move ${move} has collapsed to cell ${cell}!</p>
       <p>The quantum superposition has been measured, forcing the system to choose one definite state.</p>
       <p>This demonstrates <strong>wavefunction collapse</strong> - a fundamental quantum mechanics concept.</p>
       <p>All other instances of this move have disappeared, as they were just probability waves.</p>
-      <p>In full quantum tic-tac-toe, collapses occur when entanglement loops form. In our simplified version, we collapse every 3rd move.</p>
+      <p>In full quantum tic-tac-toe, collapses occur when entanglement loops form. In our simplified version, we collapse every 3rd move or when a cell has too many superpositions.</p>
     `,
     win: (player) => `
       <h3>Game Over - ${player} Wins!</h3>
@@ -97,6 +106,12 @@ document.addEventListener("DOMContentLoaded", () => {
       <p>The game has ended in a draw.</p>
       <p>Even with quantum mechanics, some problems can have no clear winner!</p>
       <p>This is similar to certain quantum algorithms that may not always produce a definitive answer.</p>
+    `,
+    lastCell: `
+      <h3>Last Cell Determined</h3>
+      <p>When only one cell remains empty, quantum mechanics gives way to classical certainty.</p>
+      <p>The last cell has been automatically assigned since all other positions are determined.</p>
+      <p>This is similar to how quantum systems eventually resolve to classical outcomes after sufficient measurements.</p>
     `,
   }
 
@@ -166,7 +181,6 @@ document.addEventListener("DOMContentLoaded", () => {
         throw new Error("Backend not available")
       }
     } catch (error) {
-      console.error("checkBackendStatus error:", error)
       if (statusIndicator) {
         statusIndicator.textContent = "Disconnected (using fallback)"
         statusIndicator.style.color = "#ff0000"
@@ -219,6 +233,80 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Check backend status
     checkBackendStatus()
+  }
+
+  // Check if any cell has too many superpositions
+  function checkSuperpositionOverload() {
+    for (let i = 0; i < 9; i++) {
+      if (gameState.board[i].quantum.length >= MAX_SUPERPOSITIONS && !gameState.board[i].classical) {
+        // Find the most recent move in this cell
+        const mostRecentMove = gameState.board[i].quantum[gameState.board[i].quantum.length - 1]
+
+        // Find the other cell with this move
+        let otherCellIndex = -1
+        for (let j = 0; j < 9; j++) {
+          if (j !== i && gameState.board[j].quantum.includes(mostRecentMove)) {
+            otherCellIndex = j
+            break
+          }
+        }
+
+        if (otherCellIndex !== -1) {
+          // Collapse this move
+          messageArea.textContent = `Cell ${i} has too many superpositions! Collapsing move ${mostRecentMove}...`
+          updateExplanation("collapsingOverload")
+
+          // Add to move history
+          addMoveToHistory(
+            `Cell ${i} reached ${MAX_SUPERPOSITIONS} superpositions - forcing collapse of move ${mostRecentMove}`,
+          )
+
+          // Collapse the move
+          collapseMove(mostRecentMove, i, otherCellIndex)
+          return true
+        }
+      }
+    }
+    return false
+  }
+
+  // Check if there's only one empty cell left and fill it
+  function checkLastCell() {
+    // Count classical cells
+    const classicalCells = gameState.board.filter((cell) => cell.classical !== null).length
+
+    // If we have 8 classical cells, find and fill the last one
+    if (classicalCells === 8 && gameState.gameActive) {
+      // Find the empty cell
+      const emptyIndex = gameState.board.findIndex((cell) => cell.classical === null)
+
+      if (emptyIndex !== -1) {
+        // Determine which player's turn it is
+        const player = gameState.currentPlayer
+
+        // Fill the cell
+        gameState.board[emptyIndex].classical = player
+
+        // Clear any quantum moves in this cell
+        gameState.board[emptyIndex].quantum = []
+
+        // Add to move history
+        addMoveToHistory(`Last cell ${emptyIndex} automatically filled with ${player} (classical)`)
+
+        // Update UI
+        renderBoard()
+        messageArea.textContent = `Last cell automatically filled with ${player}`
+
+        // Update explanation
+        updateExplanation("lastCell")
+
+        // Check for win
+        checkWinCondition()
+
+        return true
+      }
+    }
+    return false
   }
 
   // Handle cell click
@@ -288,10 +376,20 @@ document.addEventListener("DOMContentLoaded", () => {
       updateExplanation("quantumMove")
     }
 
-    // Check if we need to collapse
+    // Check if any cell has too many superpositions
+    if (checkSuperpositionOverload()) {
+      return // If we collapsed due to overload, don't continue
+    }
+
+    // Check if we need to collapse based on move number
     if (gameState.moveNumber % 3 === 0) {
       collapseMove(move, cell1, cell2)
     } else {
+      // Check if there's only one empty cell left
+      if (checkLastCell()) {
+        return // If we filled the last cell, don't continue
+      }
+
       // Switch player and increment move
       gameState.currentPlayer = gameState.currentPlayer === "X" ? "O" : "X"
       gameState.moveNumber++
@@ -307,8 +405,10 @@ document.addEventListener("DOMContentLoaded", () => {
   async function collapseMove(move, cell1, cell2) {
     messageArea.textContent = `Collapsing move ${move}...`
 
-    // Update explanation
-    updateExplanation("collapsing")
+    // Update explanation if not already showing overload explanation
+    if (gameState.currentExplanationKey !== "collapsingOverload") {
+      updateExplanation("collapsing")
+    }
 
     try {
       let collapseResult
@@ -367,6 +467,11 @@ document.addEventListener("DOMContentLoaded", () => {
       // Check for win
       checkWinCondition()
 
+      // Check if there's only one empty cell left
+      if (checkLastCell()) {
+        return // If we filled the last cell, don't continue
+      }
+
       // Continue game if still active
       if (gameState.gameActive) {
         gameState.currentPlayer = gameState.currentPlayer === "X" ? "O" : "X"
@@ -416,6 +521,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
       // Check for win
       checkWinCondition()
+
+      // Check if there's only one empty cell left
+      if (checkLastCell()) {
+        return // If we filled the last cell, don't continue
+      }
 
       // Continue game if still active
       if (gameState.gameActive) {
