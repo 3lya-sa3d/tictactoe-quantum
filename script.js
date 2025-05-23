@@ -31,9 +31,6 @@ document.addEventListener("DOMContentLoaded", () => {
     currentExplanationKey: "welcome",
   }
 
-  // Constants
-  const MAX_SUPERPOSITIONS = 5 // Maximum number of superpositions per cell before forced collapse
-
   // Win patterns with their line types
   const winPatterns = [
     { cells: [0, 1, 2], type: "horizontal", position: "top: 16.67%;" },
@@ -80,20 +77,13 @@ document.addEventListener("DOMContentLoaded", () => {
       <p>When measured, the quantum state will collapse to either position with equal probability.</p>
       <p>The quantum backend is determining which position becomes "real".</p>
     `,
-    collapsingOverload: `
-      <h3>Quantum Decoherence</h3>
-      <p>A cell has reached the maximum number of superpositions (${MAX_SUPERPOSITIONS})!</p>
-      <p>In quantum systems, too many interactions with the environment can cause decoherence.</p>
-      <p>This forces a measurement to occur, collapsing the quantum state.</p>
-      <p>We're now measuring which position will become "real".</p>
-    `,
     collapsed: (move, cell) => `
       <h3>Wavefunction Collapse</h3>
       <p>Move ${move} has collapsed to cell ${cell}!</p>
       <p>The quantum superposition has been measured, forcing the system to choose one definite state.</p>
       <p>This demonstrates <strong>wavefunction collapse</strong> - a fundamental quantum mechanics concept.</p>
       <p>All other instances of this move have disappeared, as they were just probability waves.</p>
-      <p>In full quantum tic-tac-toe, collapses occur when entanglement loops form. In our simplified version, we collapse every 3rd move or when a cell has too many superpositions.</p>
+      <p>In full quantum tic-tac-toe, collapses occur when entanglement loops form. In our simplified version, we collapse every 3rd move.</p>
     `,
     win: (player) => `
       <h3>Game Over - ${player} Wins!</h3>
@@ -235,41 +225,6 @@ document.addEventListener("DOMContentLoaded", () => {
     checkBackendStatus()
   }
 
-  // Check if any cell has too many superpositions
-  function checkSuperpositionOverload() {
-    for (let i = 0; i < 9; i++) {
-      if (gameState.board[i].quantum.length >= MAX_SUPERPOSITIONS && !gameState.board[i].classical) {
-        // Find the most recent move in this cell
-        const mostRecentMove = gameState.board[i].quantum[gameState.board[i].quantum.length - 1]
-
-        // Find the other cell with this move
-        let otherCellIndex = -1
-        for (let j = 0; j < 9; j++) {
-          if (j !== i && gameState.board[j].quantum.includes(mostRecentMove)) {
-            otherCellIndex = j
-            break
-          }
-        }
-
-        if (otherCellIndex !== -1) {
-          // Collapse this move
-          messageArea.textContent = `Cell ${i} has too many superpositions! Collapsing move ${mostRecentMove}...`
-          updateExplanation("collapsingOverload")
-
-          // Add to move history
-          addMoveToHistory(
-            `Cell ${i} reached ${MAX_SUPERPOSITIONS} superpositions - forcing collapse of move ${mostRecentMove}`,
-          )
-
-          // Collapse the move
-          collapseMove(mostRecentMove, i, otherCellIndex)
-          return true
-        }
-      }
-    }
-    return false
-  }
-
   // Check if there's only one empty cell left and fill it
   function checkLastCell() {
     // Count classical cells
@@ -376,11 +331,6 @@ document.addEventListener("DOMContentLoaded", () => {
       updateExplanation("quantumMove")
     }
 
-    // Check if any cell has too many superpositions
-    if (checkSuperpositionOverload()) {
-      return // If we collapsed due to overload, don't continue
-    }
-
     // Check if we need to collapse based on move number
     if (gameState.moveNumber % 3 === 0) {
       collapseMove(move, cell1, cell2)
@@ -405,10 +355,8 @@ document.addEventListener("DOMContentLoaded", () => {
   async function collapseMove(move, cell1, cell2) {
     messageArea.textContent = `Collapsing move ${move}...`
 
-    // Update explanation if not already showing overload explanation
-    if (gameState.currentExplanationKey !== "collapsingOverload") {
-      updateExplanation("collapsing")
-    }
+    // Update explanation
+    updateExplanation("collapsing")
 
     try {
       let collapseResult
